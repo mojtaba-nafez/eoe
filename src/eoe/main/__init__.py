@@ -141,7 +141,7 @@ def default_argsparse(modify_descr: Callable[[str, ], str], modify_parser: Calla
     )
     if modify_parser is not None:
         modify_parser(parser)
-    args = parser.parse_args()
+    args = parser.parse_args([])
     if args.devices is None:
         args.devices = list(range(torch.cuda.device_count()))
     if args.oe_dataset == 'none':
