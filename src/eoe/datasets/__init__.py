@@ -17,7 +17,6 @@ from eoe.datasets.tinyimages import ADTinyImages
 from eoe.datasets.custom import ADCustomDS
 from eoe.utils.logger import Logger
 from eoe.utils.transformations import TRANSFORMS, get_transform, ConditionalCompose
-import torchvision.transforms as transforms
 
 DS_CHOICES = {  # list of implemented datasets (most can also be used as OE)
     'cifar10': {
@@ -302,10 +301,9 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
             total_train_transform = deepcopy(normal_dataset.train_transform)
             total_test_transform = deepcopy(normal_dataset.test_transform)
             limit = oe_limit_samples
-
             train_conditional_transform = ConditionalCompose([
-                    (nominal_label, msm.get_transform(), msm.get_transform()) for msm in msms if msm.ds_part == TRAIN_OE_ID
-                ])
+                (nominal_label, msm.get_transform(), msm.get_transform()) for msm in msms if msm.ds_part == TRAIN_OE_ID
+            ])
             test_conditional_transform = None
             kwargs = {}
             if isinstance(normal_dataset, ADCustomDS) and name == 'custom':  # special case for custom being used as OE
