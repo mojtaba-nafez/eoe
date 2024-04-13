@@ -296,10 +296,12 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
             limit = np.infty
             kwargs = {}
         elif name == 'mvtec': # mvtechad oe case  
-            train_classes = sorted(
-                np.random.choice(list(range(no_classes(name))), min(no_classes(name), oe_limit_classes), False)
-            )
-            train_label = 1 - nominal_label
+            # train_classes = sorted(
+            #     np.random.choice(list(range(no_classes(name))), min(no_classes(name), oe_limit_classes), False)
+            # )
+            # train_label = 1 - nominal_label
+            train_classes = normal_classes
+            train_label = nominal_label
             total_test_transform = deepcopy(normal_dataset.test_transform)
             limit = oe_limit_samples
             
