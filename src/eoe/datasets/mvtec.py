@@ -170,7 +170,11 @@ class MvTec(VisionDataset):
 
     def __getitem__(self, index: int) -> Union[Tuple[torch.Tensor, int, int], Tuple[torch.Tensor, int, torch.Tensor, int]]:
         img, label = self.data[index], self.targets[index]
-
+        
+        print("self.pre_transform", self.pre_transform)
+        print("self.conditional_transform", self.conditional_transform)
+        print("self.post_transform", self.post_transform)
+        print("transform", self.transform)
         if self.split == 'test_defect_label_target':
             label = self.target_transform(self.anomaly_labels[index])
         if self.target_transform is not None:
