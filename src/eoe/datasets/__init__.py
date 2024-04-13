@@ -19,6 +19,7 @@ from eoe.datasets.tinyimages import ADTinyImages
 from eoe.datasets.custom import ADCustomDS
 from eoe.utils.logger import Logger
 from eoe.utils.transformations import TRANSFORMS, get_transform, ConditionalCompose
+from eoe.datasets.cutpast_transformation import *
 
 DS_CHOICES = {  # list of implemented datasets (most can also be used as OE)
     'cifar10': {
@@ -301,7 +302,7 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
             # )
             # train_label = 1 - nominal_label
             train_classes = normal_classes
-            train_label = nominal_label
+            train_label = 1 - nominal_label
             total_test_transform = deepcopy(normal_dataset.test_transform)
             limit = oe_limit_samples
             
@@ -312,7 +313,8 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
                 transforms.RandomCrop(224),
                 transforms.RandomHorizontalFlip(),
                 'clip_pil_preprocessing',
-                transforms.ToTensor(),
+                # transforms.ToTensor(),
+                CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])),
                 transforms.Lambda(lambda x: x + 0.001 * torch.randn_like(x)),
                 'clip_tensor_preprocessing'
             ])
