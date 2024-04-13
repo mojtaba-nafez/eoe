@@ -408,6 +408,7 @@ class ADTrainer(ABC):
                 gc.collect()
                 # ---- loop over batches
                 for imgs, lbls, idcs in loader:
+                    continue
                     imgs = imgs.to(self.device)
                     lbls = lbls.to(self.device)
                     with torch.no_grad():
