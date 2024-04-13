@@ -159,14 +159,7 @@ class MvTec(VisionDataset):
         if self.enlarge:
             self.data, self.targets = self.data.repeat(10, 1, 1, 1), self.targets.repeat(10)
             self.anomaly_labels = self.anomaly_labels.repeat(10) if self.anomaly_labels is not None else None
-        print("+++++++++++++++++++++++++++++")
-        print("self.pre_transform", self.pre_transform)
-        print("----------")
-        print("self.conditional_transform", self.conditional_transform)
-        print("----------")
-        print("self.post_transform", self.post_transform)
-        print("----------")
-        print("transform", self.transform)
+      
 
     @property
     def data_file(self):
@@ -187,12 +180,10 @@ class MvTec(VisionDataset):
         if self.transform is not None:
             img = to_pil_image(img)
             if self.conditional_transform is not None:
-                print("self.conditional_transform is not None")
                 img = self.pre_transform(img)
                 img = self.conditional_transform(img, label)
                 img = self.post_transform(img)
             else:
-                print("NNNNNNNOOOOOOOOOO")
                 img = self.transform(img)
 
         return img, label, index
