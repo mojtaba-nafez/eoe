@@ -159,6 +159,14 @@ class MvTec(VisionDataset):
         if self.enlarge:
             self.data, self.targets = self.data.repeat(10, 1, 1, 1), self.targets.repeat(10)
             self.anomaly_labels = self.anomaly_labels.repeat(10) if self.anomaly_labels is not None else None
+        print("+++++++++++++++++++++++++++++")
+        print("self.pre_transform", self.pre_transform)
+        print("----------")
+        print("self.conditional_transform", self.conditional_transform)
+        print("----------")
+        print("self.post_transform", self.post_transform)
+        print("----------")
+        print("transform", self.transform)
 
     @property
     def data_file(self):
@@ -170,11 +178,7 @@ class MvTec(VisionDataset):
 
     def __getitem__(self, index: int) -> Union[Tuple[torch.Tensor, int, int], Tuple[torch.Tensor, int, torch.Tensor, int]]:
         img, label = self.data[index], self.targets[index]
-        
-        print("self.pre_transform", self.pre_transform)
-        print("self.conditional_transform", self.conditional_transform)
-        print("self.post_transform", self.post_transform)
-        print("transform", self.transform)
+
         if self.split == 'test_defect_label_target':
             label = self.target_transform(self.anomaly_labels[index])
         if self.target_transform is not None:
