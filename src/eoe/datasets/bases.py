@@ -498,7 +498,7 @@ class CombinedDataset(TorchvisionDataset):
             return self.normal.n_normal_anomalous(train)
 
     def loaders(self, batch_size: int, shuffle_train=True, shuffle_test=False,
-                num_workers: int = 0, persistent=False, prefetch_factor: int = None) -> Tuple[DataLoader, DataLoader]:
+                num_workers: int = 0, persistent=False, prefetch_factor: int = 2) -> Tuple[DataLoader, DataLoader]:
         """
         Returns the normal datasets' test loader.
         For training, returns a :class:`BalancedConcatLoader` that yields balanced batches
@@ -508,7 +508,6 @@ class CombinedDataset(TorchvisionDataset):
         For a description of the parameters see :method:`eoe.datasets.bases.TorchvisionDataset.loaders`.
         @return: a tuple of (train_loader, test_loader)
         """
-        num_workers = 0
         # classes = None means all classes
         normal_train_loader, test_loader = self.normal.loaders(
             batch_size, shuffle_train, shuffle_test, False, num_workers, persistent, prefetch_factor
