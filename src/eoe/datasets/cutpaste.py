@@ -129,9 +129,9 @@ class CutPasteUnion(object):
     def __call__(self, img):
         r = random.uniform(0, 1)
         if r < 0.5:
-            return self.normal(img)[1]
+            return self.normal(img)
         else:
-            return self.scar(img)[1]
+            return self.scar(img)
 
 class CutPaste3Way(object):
     def __init__(self, **kwags):
