@@ -4,6 +4,7 @@ from typing import List, Union, Tuple
 import numpy as np
 from torchvision.transforms import Resize, Compose
 import torchvision.transforms as transforms
+import torch
 
 from eoe.datasets.bases import TorchvisionDataset, CombinedDataset
 from eoe.datasets.cifar import ADCIFAR10, ADCIFAR100
