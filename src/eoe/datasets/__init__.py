@@ -328,7 +328,7 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
                 normal_dataset.train_transform.transforms = [
                     t if not isinstance(t, str) else (
                         transforms.Compose(test_transform.transforms[:3]) if t == 'clip_pil_preprocessing' else (
-                            transform.transforms[-1] if t == 'clip_tensor_preprocessing' else
+                            test_transform.transforms[-1] if t == 'clip_tensor_preprocessing' else
                             raise_error(t)
                         )
                     )
