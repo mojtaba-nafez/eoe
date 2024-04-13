@@ -17,6 +17,7 @@ from eoe.datasets.tinyimages import ADTinyImages
 from eoe.datasets.custom import ADCustomDS
 from eoe.utils.logger import Logger
 from eoe.utils.transformations import TRANSFORMS, get_transform, ConditionalCompose
+import torchvision.transforms as transforms
 
 DS_CHOICES = {  # list of implemented datasets (most can also be used as OE)
     'cifar10': {
