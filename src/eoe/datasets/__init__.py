@@ -302,7 +302,9 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
             total_test_transform = deepcopy(normal_dataset.test_transform)
             limit = oe_limit_samples
             if name == 'mvtec': 
-                normal_dataset.train_transform = transforms.Compose([
+                print("normal_dataset.train_transform === ", normal_dataset.train_transform)
+                '''
+                = transforms.Compose([
                     transforms.Resize((256, 256)),
                     transforms.ColorJitter(brightness=0.01, contrast=0.01, saturation=0.01, hue=0.01),
                     transforms.RandomCrop(224),
@@ -312,8 +314,28 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
                     transforms.Lambda(lambda x: x + 0.001 * torch.randn_like(x)),
                     'clip_tensor_preprocessing'
                 ])
-                total_train_transform = deepcopy(normal_dataset.train_transform)
+                '''
+                _train_transform_ = transforms.Compose([
+                    transforms.Resize((256, 256)),
+                    transforms.ColorJitter(brightness=0.01, contrast=0.01, saturation=0.01, hue=0.01),
+                    transforms.RandomCrop(224),
+                    transforms.RandomHorizontalFlip(),
+                    'clip_pil_preprocessing',
+                    transforms.ToTensor(),
+                    transforms.Lambda(lambda x: x + 0.001 * torch.randn_like(x)),
+                    'clip_tensor_preprocessing'
+                ])
+                normal_dataset.train_transform.transforms = [
+                    t if not isinstance(t, str) else (
+                        transforms.Compose(transform.transforms[:3]) if t == 'clip_pil_preprocessing' else (
+                            transform.transforms[-1] if t == 'clip_tensor_preprocessing' else
+                            raise_error(t)
+                        )
+                    )
+                    for t in _train_transform_.transforms
+                ]
 
+                total_train_transform = deepcopy(normal_dataset.train_transform)
                 train_conditional_transform = None
             else:    
                 train_conditional_transform = ConditionalCompose([
