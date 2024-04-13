@@ -187,10 +187,12 @@ class MvTec(VisionDataset):
         if self.transform is not None:
             img = to_pil_image(img)
             if self.conditional_transform is not None:
+                print("self.conditional_transform is not None")
                 img = self.pre_transform(img)
                 img = self.conditional_transform(img, label)
                 img = self.post_transform(img)
             else:
+                print("NNNNNNNOOOOOOOOOO")
                 img = self.transform(img)
 
         return img, label, index
