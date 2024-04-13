@@ -311,7 +311,7 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
                 transforms.Resize((256, 256)),
                 transforms.ColorJitter(brightness=0.01, contrast=0.01, saturation=0.01, hue=0.01),
                 transforms.RandomCrop(224),
-                CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])),
+                CutPasteUnion(),
                 transforms.RandomHorizontalFlip(),
                 'clip_pil_preprocessing',
                 transforms.ToTensor(),
