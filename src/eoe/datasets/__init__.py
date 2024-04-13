@@ -302,10 +302,8 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
             total_train_transform = deepcopy(normal_dataset.train_transform)
             total_test_transform = deepcopy(normal_dataset.test_transform)
             limit = oe_limit_samples
-            if name == 'mvtec':
-                train_conditional_transform = None
-            else:
-                train_conditional_transform = ConditionalCompose([
+
+            train_conditional_transform = ConditionalCompose([
                     (nominal_label, msm.get_transform(), msm.get_transform()) for msm in msms if msm.ds_part == TRAIN_OE_ID
                 ])
             test_conditional_transform = None
