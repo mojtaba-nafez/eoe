@@ -301,7 +301,17 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
             total_train_transform = deepcopy(normal_dataset.train_transform)
             total_test_transform = deepcopy(normal_dataset.test_transform)
             limit = oe_limit_samples
-            if name == 'mvtec':
+            if name == 'mvtec': 
+                total_train_transform = transforms.Compose([
+                    transforms.Resize((256, 256)),
+                    transforms.ColorJitter(brightness=0.01, contrast=0.01, saturation=0.01, hue=0.01),
+                    transforms.RandomCrop(224),
+                    transforms.RandomHorizontalFlip(),
+                    'clip_pil_preprocessing',
+                    transforms.ToTensor(),
+                    transforms.Lambda(lambda x: x + 0.001 * torch.randn_like(x)),
+                    'clip_tensor_preprocessing'
+                ])
                 train_conditional_transform = None
             else:    
                 train_conditional_transform = ConditionalCompose([
