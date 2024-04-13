@@ -311,10 +311,10 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
                 transforms.Resize((256, 256)),
                 transforms.ColorJitter(brightness=0.01, contrast=0.01, saturation=0.01, hue=0.01),
                 transforms.RandomCrop(224),
+                CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])),
                 transforms.RandomHorizontalFlip(),
                 'clip_pil_preprocessing',
-                # transforms.ToTensor(),
-                CutPasteUnion(transform = transforms.Compose([transforms.ToTensor(),])),
+                transforms.ToTensor(),
                 transforms.Lambda(lambda x: x + 0.001 * torch.randn_like(x)),
                 'clip_tensor_preprocessing'
             ])
