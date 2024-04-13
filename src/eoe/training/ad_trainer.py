@@ -243,6 +243,7 @@ class ADTrainer(ABC):
                     self.train_transform, self.test_transform, self.logger, self.oe_dsstr,
                     self.oe_limit_samples, self.oe_limit_classes, self.msms
                 ) if self.ds is None else self.ds
+                return ds
                 ADImageNet21k.img_cache_size = orig_cache_size
 
                 # train
