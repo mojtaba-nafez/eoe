@@ -16,7 +16,7 @@ from eoe.datasets.bases import TorchvisionDataset, CombinedDataset
 from eoe.datasets.imagenet import ADImageNet21k
 from eoe.models.clip_official.clip.model import CLIP
 from eoe.utils.logger import Logger, ROC, PRC
-
+import gc 
 
 class NanGradientsError(RuntimeError):
     pass
@@ -389,6 +389,8 @@ class ADTrainer(ABC):
                 rowheaders=[str(stats[k]) for k in sorted(stats.keys())]
             )
             del prev
+            gc.collect()
+
 
         # ---- prepare trackers and loggers  
         ep, loss = self.load(load if isinstance(load, str) else None, model, opt, sched), None
@@ -403,7 +405,7 @@ class ADTrainer(ABC):
             # ---- loop over epochs
             for ep in range(ep, epochs):
                 ep_labels, ep_ascores = [], [] 
-                
+                gc.collect()
                 # ---- loop over batches
                 for imgs, lbls, idcs in loader:
                     imgs = imgs.to(self.device)
