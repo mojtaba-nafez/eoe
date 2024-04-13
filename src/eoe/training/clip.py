@@ -48,6 +48,7 @@ class ADClipTrainer(ADTrainer):
         self.anom_tkn_ptn = anom_tkn_ptn
 
     def prepare_metric(self, cstr: str, loader: DataLoader, model: torch.nn.Module, seed: int, **kwargs) -> torch.Tensor:
+        print("cstr   =========", cstr)
         if self.ad_mode == 'one_vs_rest':
             raw_texts = [f"a photo of a {cstr}", self.anom_tkn_ptn.format(cstr)]
         elif self.ad_mode == 'leave_one_out':
