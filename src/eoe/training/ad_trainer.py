@@ -238,6 +238,7 @@ class ADTrainer(ABC):
                 orig_cache_size = ADImageNet21k.img_cache_size
                 if isinstance(cur_load, str) and self.load_epochs_only(cur_load) >= self.epochs:
                     ADImageNet21k.img_cache_size = 0
+                '''
                 print("self.dsstr", self.dsstr)
                 print("self.datapath", self.datapath)
                 print("self.get_nominal_classes(c)", self.get_nominal_classes(c))
@@ -249,13 +250,13 @@ class ADTrainer(ABC):
                 print("self.msms", self.msms)
                 print("self.oe_dsstr", self.oe_dsstr)
                 print("self.oe_dsstr", self.oe_dsstr)
-
+                '''
                 ds = load_dataset(
                     self.dsstr, self.datapath, self.get_nominal_classes(c), 0,
                     self.train_transform, self.test_transform, self.logger, self.oe_dsstr,
                     self.oe_limit_samples, self.oe_limit_classes, self.msms
                 ) if self.ds is None else self.ds
-                return ds
+                # return ds
                 ADImageNet21k.img_cache_size = orig_cache_size
 
                 # train
