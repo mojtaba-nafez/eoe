@@ -301,14 +301,22 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
             total_train_transform = deepcopy(normal_dataset.train_transform)
             total_test_transform = deepcopy(normal_dataset.test_transform)
             limit = oe_limit_samples
-            print("total_train_transform=====", total_train_transform)
-            #if name == 'mvtec':
-            #    train_conditional_transform = None
-            #    total_train_transform = 
-            #else:
-            train_conditional_transform = ConditionalCompose([
-                (nominal_label, msm.get_transform(), msm.get_transform()) for msm in msms if msm.ds_part == TRAIN_OE_ID
-            ])
+            if name == 'mvtec':
+                train_conditional_transform = None
+                total_train_transform = transforms.Compose([
+                    transforms.Resize((256, 256)),
+                    transforms.ColorJitter(brightness=0.01, contrast=0.01, saturation=0.01, hue=0.01),
+                    transforms.RandomCrop(224),
+                    transforms.RandomHorizontalFlip(),
+                    'clip_pil_preprocessing',
+                    transforms.ToTensor(),
+                    transforms.Lambda(lambda x: x + 0.001 * torch.randn_like(x)),
+                    'clip_tensor_preprocessing'
+                ])
+            else:
+                train_conditional_transform = ConditionalCompose([
+                    (nominal_label, msm.get_transform(), msm.get_transform()) for msm in msms if msm.ds_part == TRAIN_OE_ID
+                ])
             test_conditional_transform = None
             kwargs = {}
             if isinstance(normal_dataset, ADCustomDS) and name == 'custom':  # special case for custom being used as OE
