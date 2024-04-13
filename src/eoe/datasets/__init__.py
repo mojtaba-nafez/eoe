@@ -295,53 +295,60 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
             ])
             limit = np.infty
             kwargs = {}
-        else:  # oe case
+        elif name == 'mvtec': # mvtechad oe case  
             train_classes = sorted(
                 np.random.choice(list(range(no_classes(name))), min(no_classes(name), oe_limit_classes), False)
             )
             train_label = 1 - nominal_label
             total_test_transform = deepcopy(normal_dataset.test_transform)
             limit = oe_limit_samples
-            if name == 'mvtec': 
-                print("normal_dataset.train_transform === ", normal_dataset.train_transform)
-                '''
-                = transforms.Compose([
-                    transforms.Resize((256, 256)),
-                    transforms.ColorJitter(brightness=0.01, contrast=0.01, saturation=0.01, hue=0.01),
-                    transforms.RandomCrop(224),
-                    transforms.RandomHorizontalFlip(),
-                    'clip_pil_preprocessing',
-                    transforms.ToTensor(),
-                    transforms.Lambda(lambda x: x + 0.001 * torch.randn_like(x)),
-                    'clip_tensor_preprocessing'
-                ])
-                '''
-                _train_transform_ = transforms.Compose([
-                    transforms.Resize((256, 256)),
-                    transforms.ColorJitter(brightness=0.01, contrast=0.01, saturation=0.01, hue=0.01),
-                    transforms.RandomCrop(224),
-                    transforms.RandomHorizontalFlip(),
-                    'clip_pil_preprocessing',
-                    transforms.ToTensor(),
-                    transforms.Lambda(lambda x: x + 0.001 * torch.randn_like(x)),
-                    'clip_tensor_preprocessing'
-                ])
-                normal_dataset.train_transform.transforms = [
-                    t if not isinstance(t, str) else (
-                        transforms.Compose(test_transform.transforms[:3]) if t == 'clip_pil_preprocessing' else (
-                            test_transform.transforms[-1] if t == 'clip_tensor_preprocessing' else
-                            raise_error(t)
-                        )
+            
+            print("normal_dataset.train_transform === ", normal_dataset.train_transform)
+            _train_transform_ = transforms.Compose([
+                transforms.Resize((256, 256)),
+                transforms.ColorJitter(brightness=0.01, contrast=0.01, saturation=0.01, hue=0.01),
+                transforms.RandomCrop(224),
+                transforms.RandomHorizontalFlip(),
+                'clip_pil_preprocessing',
+                transforms.ToTensor(),
+                transforms.Lambda(lambda x: x + 0.001 * torch.randn_like(x)),
+                'clip_tensor_preprocessing'
+            ])
+            normal_dataset.train_transform.transforms = [
+                t if not isinstance(t, str) else (
+                    transforms.Compose(test_transform.transforms[:3]) if t == 'clip_pil_preprocessing' else (
+                        test_transform.transforms[-1] if t == 'clip_tensor_preprocessing' else
+                        raise_error(t)
                     )
-                    for t in _train_transform_.transforms
-                ]
+                )
+                for t in _train_transform_.transforms
+            ]
 
-                total_train_transform = deepcopy(normal_dataset.train_transform)
-                train_conditional_transform = None
-            else:    
-                train_conditional_transform = ConditionalCompose([
-                    (nominal_label, msm.get_transform(), msm.get_transform()) for msm in msms if msm.ds_part == TRAIN_OE_ID
-                ])
+            total_train_transform = deepcopy(normal_dataset.train_transform)
+            train_conditional_transform = ConditionalCompose([
+                (nominal_label, msm.get_transform(), msm.get_transform()) for msm in msms if msm.ds_part == TRAIN_OE_ID
+            ])
+            test_conditional_transform = None
+            kwargs = {}
+            if isinstance(normal_dataset, ADCustomDS) and name == 'custom':  # special case for custom being used as OE
+                if oe_limit_classes < np.inf:
+                    raise ValueError(
+                        "Using the custom dataset with its own OE part cannot be combined with limiting the OE classes."
+                    )
+                train_classes = normal_classes
+                train_label = nominal_label
+                kwargs = {"oe": True}
+        else:  # oe case
+            train_classes = sorted(
+                np.random.choice(list(range(no_classes(name))), min(no_classes(name), oe_limit_classes), False)
+            )
+            train_label = 1 - nominal_label
+            total_train_transform = deepcopy(normal_dataset.train_transform)
+            total_test_transform = deepcopy(normal_dataset.test_transform)
+            limit = oe_limit_samples
+            train_conditional_transform = ConditionalCompose([
+                (nominal_label, msm.get_transform(), msm.get_transform()) for msm in msms if msm.ds_part == TRAIN_OE_ID
+            ])
             test_conditional_transform = None
             kwargs = {}
             if isinstance(normal_dataset, ADCustomDS) and name == 'custom':  # special case for custom being used as OE
