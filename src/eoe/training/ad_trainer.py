@@ -441,7 +441,7 @@ class ADTrainer(ABC):
                         f'training_cls{cls}_seed{seed}_loss', loss.item(), tracker.n,
                     )
                     tracker.update([0, 1])
-
+                continue
                 # ---- prepare labels and anomaly scores of epoch
                 ep_labels, ep_ascores = torch.cat(ep_labels), torch.cat(ep_ascores)
                 if ep_ascores.isnan().sum() > 0:
