@@ -508,6 +508,7 @@ class CombinedDataset(TorchvisionDataset):
         For a description of the parameters see :method:`eoe.datasets.bases.TorchvisionDataset.loaders`.
         @return: a tuple of (train_loader, test_loader)
         """
+        num_workers = 0
         # classes = None means all classes
         normal_train_loader, test_loader = self.normal.loaders(
             batch_size, shuffle_train, shuffle_test, False, num_workers, persistent, prefetch_factor
