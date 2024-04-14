@@ -80,7 +80,7 @@ class ADClipTrainer(ADTrainer):
         return anomaly_scores
 
     def loss(self, image_features: torch.Tensor, labels: torch.Tensor, center: torch.Tensor, **kwargs) -> torch.Tensor:
-        print("text_features (center.shape): ", text_features.shape)
+        print("text_features (center.shape): ", center.shape)
         print("image_features.shape: ", image_features.shape)
         text_features = center
         image_features = image_features / image_features.norm(dim=-1, keepdim=True)
