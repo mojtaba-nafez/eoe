@@ -213,7 +213,10 @@ class ADTrainer(ABC):
 
         # Loop over all classes, considering in each step the current class nominal
         for c, cstr in ((c, cstr) for c, cstr in enumerate(classes) if c in run_classes):
-
+            print("run_seeds:", run_seeds)
+            for seed in range(run_seeds):
+                print("seed=", seed)
+            print("---------")
             for seed in range(run_seeds):
                 self.logger.print(f'------ start training cls {c} "{cstr}" ------')
                 gc.collect()
