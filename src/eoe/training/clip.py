@@ -80,9 +80,14 @@ class ADClipTrainer(ADTrainer):
         return anomaly_scores
 
     def loss(self, image_features: torch.Tensor, labels: torch.Tensor, center: torch.Tensor, **kwargs) -> torch.Tensor:
+        print("text_features (center.shape): ", text_features.shape)
+        print("image_features.shape: ", image_features.shape)
         text_features = center
         image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+        print("++ image_features/image_features.norm(dim=-1, keepdim=True).shape: ", image_features.shape)
         similarity = (100.0 * image_features @ text_features.T).log_softmax(dim=-1)
+        print("similarity.shape", similarity.shape)
+        print("self.ad_mode", self.ad_mode)
         if self.ad_mode == 'one_vs_rest':
             aloss = similarity[labels == 1][:, -1]
             nloss = similarity[labels == 0][:, 0]
@@ -97,6 +102,10 @@ class ADClipTrainer(ADTrainer):
             loss[labels == 0] = nloss
         else:
             raise NotImplementedError()
+        print("1: loss.shape:", loss.shape)
         loss = loss.mul(-1)
+        print("2: loss.shape:", loss.shape)
         loss = loss.mean()
+        print("3: loss.shape:", loss.shape)
+        
         return loss
