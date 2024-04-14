@@ -307,7 +307,6 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
             total_test_transform = deepcopy(normal_dataset.test_transform)
             limit = oe_limit_samples
             
-            print("normal_dataset.train_transform === ", normal_dataset.train_transform)
             _train_transform_ = transforms.Compose([
                 transforms.Resize((256, 256)),
                 transforms.ColorJitter(brightness=0.01, contrast=0.01, saturation=0.01, hue=0.01),
