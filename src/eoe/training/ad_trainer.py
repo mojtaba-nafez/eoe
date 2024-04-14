@@ -212,11 +212,8 @@ class ADTrainer(ABC):
             'pre-loading DS (setting trainer.ds to something) only allowed for one class'
 
         # Loop over all classes, considering in each step the current class nominal
+        print("run_seeds:", run_seeds)
         for c, cstr in ((c, cstr) for c, cstr in enumerate(classes) if c in run_classes):
-            print("run_seeds:", run_seeds)
-            for seed in range(run_seeds):
-                print("seed=", seed)
-            print("---------")
             for seed in range(run_seeds):
                 self.logger.print(f'------ start training cls {c} "{cstr}" ------')
                 gc.collect()

@@ -50,7 +50,8 @@ class ADClipTrainer(ADTrainer):
     def prepare_metric(self, cstr: str, loader: DataLoader, model: torch.nn.Module, seed: int, **kwargs) -> torch.Tensor:
         print("cstr   =========", cstr)
         if self.ad_mode == 'one_vs_rest':
-            raw_texts = [f"a photo of a {cstr}", self.anom_tkn_ptn.format(cstr)]
+            # raw_texts = [f"a photo of a {cstr}", self.anom_tkn_ptn.format(cstr)]
+            raw_texts = [f"a photo of a {cstr}", f"a photo of a {cstr} with defect"]
         elif self.ad_mode == 'leave_one_out':
             raw_texts = [*[f"a photo of a {cs}" for cs in str_labels(self.dsstr) if cs != cstr], self.anom_tkn_ptn.format(cstr)]
         else:
