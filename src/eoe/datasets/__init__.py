@@ -5,6 +5,7 @@ import numpy as np
 from torchvision.transforms import Resize, Compose
 import torchvision.transforms as transforms
 import torch
+import gc 
 
 from eoe.datasets.bases import TorchvisionDataset, CombinedDataset
 from eoe.datasets.cifar import ADCIFAR10, ADCIFAR100
@@ -373,6 +374,10 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
             dataset = DS_CHOICES[name]['class'](*args, **kwargs)
         else:
             dataset = DS_CHOICES[name]['class'](*args, **kwargs)
+            if name == 'mvtec':
+                del dataset._test_set
+                gc.collect()
+
 
         if normal_dataset is not None:  # oe case
             dataset.gpu_train_transform = Compose([normal_dataset.gpu_train_transform, dataset.gpu_train_transform])

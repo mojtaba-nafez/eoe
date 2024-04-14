@@ -80,15 +80,20 @@ class ADClipTrainer(ADTrainer):
         return anomaly_scores
 
     def loss(self, image_features: torch.Tensor, labels: torch.Tensor, center: torch.Tensor, **kwargs) -> torch.Tensor:
-        print("text_features (center.shape): ", center.shape)
-        print("image_features.shape: ", image_features.shape)
+        # text_features (center.shape):     torch.Size([2, 512])    
+        # text_features = [[normal token embedding],[anomaly token embedding]]
+        # image_features.shape:     torch.Size([256, 512])
+        # image_features/image_features.norm(dim=-1, keepdim=True).shape:   torch.Size([256, 512])
         text_features = center
         image_features = image_features / image_features.norm(dim=-1, keepdim=True)
-        print("++ image_features/image_features.norm(dim=-1, keepdim=True).shape: ", image_features.shape)
+        # similarity.shape torch.Size([256, 2])
         similarity = (100.0 * image_features @ text_features.T).log_softmax(dim=-1)
-        print("similarity.shape", similarity.shape)
-        print("self.ad_mode", self.ad_mode)
+        # self.ad_mode one_vs_rest
         if self.ad_mode == 'one_vs_rest':
+            '''
+            for normal img loss try to maximize similarity of img and normal text token
+            for anomaly img loss try to maximize similarity of img and anomaly text token
+            '''
             aloss = similarity[labels == 1][:, -1]
             nloss = similarity[labels == 0][:, 0]
             loss = torch.zeros_like(similarity[:, 0])
@@ -102,10 +107,10 @@ class ADClipTrainer(ADTrainer):
             loss[labels == 0] = nloss
         else:
             raise NotImplementedError()
-        print("1: loss.shape:", loss.shape)
+        # 1: loss.shape: torch.Size([256])
         loss = loss.mul(-1)
-        print("2: loss.shape:", loss.shape)
+        # 2: loss.shape: torch.Size([256])
         loss = loss.mean()
-        print("3: loss.shape:", loss.shape)
+        # 3: loss.shape: torch.Size([])
         
         return loss

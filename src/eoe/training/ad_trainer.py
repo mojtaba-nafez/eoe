@@ -216,6 +216,7 @@ class ADTrainer(ABC):
 
             for seed in range(run_seeds):
                 self.logger.print(f'------ start training cls {c} "{cstr}" ------')
+                gc.collect()
                 if load is not None and len(load) > c and len(load[c]) > seed:
                     cur_load = load[c][seed]
                 else:
@@ -251,6 +252,11 @@ class ADTrainer(ABC):
                 print("self.oe_dsstr", self.oe_dsstr)
                 print("self.oe_dsstr", self.oe_dsstr)
                 '''
+                try:
+                    del ds
+                    gc.collect()
+                except:
+                    pass
                 ds = load_dataset(
                     self.dsstr, self.datapath, self.get_nominal_classes(c), 0,
                     self.train_transform, self.test_transform, self.logger, self.oe_dsstr,
@@ -262,6 +268,7 @@ class ADTrainer(ABC):
                 # train
                 for i in range(5):
                     try:
+                        gc.collect()
                         model = copy_model()
                         model, roc = self.train_cls(model, ds, c, cstr, seed, cur_load)
                         break
@@ -270,6 +277,11 @@ class ADTrainer(ABC):
                             f'Gradients got NaN for class {c} "{cstr}" and seed {seed}. '
                             f'Happened {i} times so far. Try once more.'
                         )
+                        try:
+                            del ds
+                            gc.collect()
+                        except:
+                            pass
                         ds = load_dataset(
                             self.dsstr, self.datapath, self.get_nominal_classes(c), 0,
                             self.train_transform, self.test_transform, self.logger, self.oe_dsstr,
