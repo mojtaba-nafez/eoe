@@ -372,11 +372,11 @@ def load_dataset(dataset_name: str, data_path: str, normal_classes: List[int], n
         if DS_CHOICES[name]['oe_only']:
             assert normal_dataset is not None, f"{name} can only be used as OE!"
             dataset = DS_CHOICES[name]['class'](*args, **kwargs)
-        else:
-            dataset = DS_CHOICES[name]['class'](*args, **kwargs)
             if name == 'mvtec':
                 del dataset._test_set
                 gc.collect()
+        else:
+            dataset = DS_CHOICES[name]['class'](*args, **kwargs)
 
 
         if normal_dataset is not None:  # oe case
